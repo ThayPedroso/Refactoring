@@ -4,24 +4,28 @@ const readPlays = JSON.parse(fs.readFileSync('./plays.json'))
 const readInvoices = JSON.parse(fs.readFileSync('./invoices.json'))
 
 function statement (invoice, plays) {
-    let totalAmount = 0
     let result = `Statement for ${invoice.customer}\n` 
     
     for (let perf of invoice.performances) {
-        
-        // exibe a linha para esta requisição
         result += `  ${playFor(perf).name}: ${usd(amountFor(perf)/100)} (${perf.audience} seats)\n`
-        totalAmount += amountFor(perf)
     }
-  
+    let totalAmount = apple()
+    
     result += `Amount owed is ${usd(totalAmount/100)}\n`
     result += `You earned ${totalVolumeCredits()} credits\n`
     return result
 
+    function apple() {
+        let totalAmount = 0
+        for (let perf of invoice.performances) {
+            totalAmount += amountFor(perf)
+        }
+        return totalAmount
+    }
+
     function totalVolumeCredits(){
         let volumeCredits = 0
         for (let perf of invoice.performances) {
-    
             volumeCredits += volumeCreditsFor(perf)
         }
         return volumeCredits
