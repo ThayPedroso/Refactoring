@@ -5,16 +5,19 @@ const readInvoices = JSON.parse(fs.readFileSync('./invoices.json'))
 
 function statement (invoice, plays) {
     let totalAmount = 0
-    let volumeCredits = 0
     let result = `Statement for ${invoice.customer}\n` 
-
+    
     for (let perf of invoice.performances) {
-
-        volumeCredits += volumeCreditsFor(perf)
-
+        
         // exibe a linha para esta requisição
         result += `  ${playFor(perf).name}: ${usd(amountFor(perf)/100)} (${perf.audience} seats)\n`
         totalAmount += amountFor(perf)
+    }
+    
+    let volumeCredits = 0
+    for (let perf of invoice.performances) {
+
+        volumeCredits += volumeCreditsFor(perf)
     }
 
     result += `Amount owed is ${usd(totalAmount/100)}\n`
@@ -24,7 +27,7 @@ function statement (invoice, plays) {
     function usd(aNumber) {
         return new Intl.NumberFormat("en-US", {
             style: "currency", currency: "USD", minimumFractionDigits: 2
-        }).format(aNumber)
+        }).format(aNumber/100)
     }
 
     function volumeCreditsFor(aPerformance) {
