@@ -4,6 +4,10 @@ const readPlays = JSON.parse(fs.readFileSync('./plays.json'))
 const readInvoices = JSON.parse(fs.readFileSync('./invoices.json'))
 
 function statement (invoice, plays) {
+    return renderPlainText(invoice, plays)
+}
+
+function renderPlainText (invoice, plays) {
     let result = `Statement for ${invoice.customer}\n` 
     
     for (let perf of invoice.performances) {
