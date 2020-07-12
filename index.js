@@ -4,13 +4,16 @@ const readPlays = JSON.parse(fs.readFileSync('./plays.json'))
 const readInvoices = JSON.parse(fs.readFileSync('./invoices.json'))
 
 function statement (invoice, plays) {
-    return renderPlainText(invoice, plays)
+    const statementData = {}
+    statementData.customer = invoice.customer
+    statementData.performances = invoice.performances
+    return renderPlainText(statementData, invoice, plays)
 }
 
-function renderPlainText (invoice, plays) {
-    let result = `Statement for ${invoice.customer}\n` 
+function renderPlainText (data, plays) {
+    let result = `Statement for ${data.customer}\n` 
     
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
         result += `  ${playFor(perf).name}: ${usd(amountFor(perf)/100)} (${perf.audience} seats)\n`
     }
 
@@ -20,7 +23,7 @@ function renderPlainText (invoice, plays) {
 
     function totalAmount() {
         let result = 0
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) {
             result += amountFor(perf)
         }
         return result
@@ -28,7 +31,7 @@ function renderPlainText (invoice, plays) {
 
     function totalVolumeCredits(){
         let result = 0
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) {
             result += volumeCreditsFor(perf)
         }
         return result
